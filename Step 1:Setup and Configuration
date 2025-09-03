@@ -1,0 +1,61 @@
+Setup and Configuration
+
+Steps to be Performed: ------->
+Create S3 Buckets
+Configure IAM Roles and Policies
+Setup Amazon QuickSight
+
+#1 Create S3 Buckets: ------->
+Amazon S3 will be the backbone of our pipeline, acting as storage for raw, processed and final data.
+Here we will be creating three S3 buckets for storing— Raw, processed and final data respectively. 
+Log in to AWS Console and navigate to the S3 service.
+
+Click on “Create bucket”.
+Fill out the following details:
+Bucket Name: Use descriptive names like csv-raw-data for raw data , csv-processed-data for processed data and csv-final-data for final data.
+Region: Choose the same region for all resources in this project (e.g., us-east-1).
+
+Leave the rest of the options at default and click Create bucket.
+Repeat this process to create a other two buckets for processed data and final data.
+In the end, you should be having 3 buckets for raw, processed and final data. 
+Tip: Keep your bucket names unique across all AWS accounts. Use a naming convention like your-project-name-raw.
+
+#2 Configure IAM Roles and Policies: ------->
+IAM (Identity and Access Management) ensures our services can securely communicate and operate. We will ensure proper permissions are given to AWS Lambda and AWS Glue.
+
+Create an IAM Role for Lambda:
+Go to the IAM Console → Roles → Create role.
+Select AWS Service as the trusted entity and choose Lambda.
+Click Next and attach the following policies:
+AmazonS3FullAccess (to read/write S3 buckets).
+AWSGlueServiceRoll (for Glue operations).
+Name the role Lambda-S3-Glue-Role and click Create Role.
+
+Create an IAM Role for Glue:
+Go to Roles → Create role.
+Select AWS Service and choose Glue.
+Attach these policies:
+AWSGlueServiceRole
+AmazonS3FullAccess
+Name the role Glue-Service-Role and click Create Role.
+
+#3 Set Up Amazon QuickSight: ------->
+Amazon QuickSight helps you visualize your processed data. Let’s setup your QuickSight account:
+Open QuickSight:
+In the AWS Console, search for QuickSight and open the service.
+If you don’t have an account yet, click Sign up for QuickSight.
+Add your email. For the Authentication Method, check Use IAM federated identities & QuickSight-managed users.
+Choose the US-East region (Same region as your buckets).Add a QuickSight Account Name. 
+For the IAM role, check the Use QuickSight-managed role (default).
+
+Configure QuickSight Settings:
+In the Allow Access, Click on Select S3 Buckets.
+Select the previously created three S3 buckets. Click on Finish.
+Uncheck the option- Add Pixel Perfect Reports and click on Finish.
+Now QuickSight is ready to access and visualize data from S3.
+
+Final Check
+You should now have:
+Three S3 buckets created (csv-raw-data , csv-processed-data and csv-final-data).
+IAM roles for Lambda and Glue with the necessary permissions.
+A QuickSight account linked to your processed data bucket.
