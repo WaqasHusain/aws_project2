@@ -1,1 +1,115 @@
+Steps to be Performed
 
+#1 Create a Lambda Function
+#2 Write the Lambda Function Code
+#3 Setup S3 Event Trigger for Lambda
+#4 Test the Data Ingestion and Preprocessing
+
+#1 Create a Lambda Function: ------->
+
+Now that we have the foundational setup, it’s time to automate the ingestion and preprocessing of CSV files.
+In this step, we’ll deploy a Lambda function that triggers automatically when a file is uploaded to the raw data S3 bucket.
+The function will clean and transform the data before saving it back to the processed data bucket. AWS Lambda allows us to execute code in response to events without managing servers.
+Navigate to the AWS Lambda Console and click Create Function.
+Choose Author from scratch and fill in the following:
+Function Name: CSVPreprocessorFunction
+Runtime: Select Python 3.13
+Role: Choose Use an existing role and select the Lambda-S3-Glue-Role created earlier.
+Click Create Function.
+
+#2 Write the Lambda Function Code: ------->
+
+Let’s write a basic preprocessing Lambda function to clean and filter CSV files.
+Scroll down to the Code section and replace the default code with the following:
+python
+
+import boto3
+import csv
+import io
+
+# Initialize S3 client
+s3 = boto3.client('s3')
+
+def lambda_handler(event, context):
+    # Get the bucket name and file key from the event
+    bucket_name = event['Records'][0]['s3']['bucket']['name']
+    file_key = event['Records'][0]['s3']['object']['key']
+
+    try:
+        # Read the CSV file from S3
+        response = s3.get_object(Bucket=bucket_name, Key=file_key)
+        csv_content = response['Body'].read().decode('utf-8')
+
+        # Process the CSV content
+        processed_rows = []
+        reader = csv.reader(io.StringIO(csv_content))
+        header = next(reader)  # Extract the header row
+
+        for row in reader:
+            # Example preprocessing: filter out rows with missing values
+            if all(row):
+                processed_rows.append(row)
+
+        # Write processed data back to a new CSV in memory
+        output_csv = io.StringIO()
+        writer = csv.writer(output_csv)
+        writer.writerow(header)  # Write the header row
+        writer.writerows(processed_rows)
+
+        # Upload the processed file to the processed data bucket
+        processed_file_key = file_key.replace('raw/', 'processed/')
+        s3.put_object(
+            Bucket='<YOUR_PROCESSED_BUCKET_NAME>',
+            Key=processed_file_key,
+            Body=output_csv.getvalue()
+        )
+
+        print(f"Processed file uploaded to: {processed_file_key}")
+
+    except Exception as e:
+        print(f"Error processing file: {str(e)}")
+        raise
+
+Make sure to change the Bucket name <YOUR_PROCESSED_BUCKET_NAME> to your actual processed data bucket name.
+This AWS Lambda function is designed to automatically process CSV files uploaded to an S3 bucket. Here’s how it works in simple terms:
+
+Triggered by S3 Upload – Whenever a file is uploaded to a specific S3 bucket (csv-raw-data), this function runs automatically.
+Reads the File – It fetches the CSV file from S3 and reads its content.
+Cleans the Data – The function removes rows that contain missing values, keeping only complete rows.
+Creates a New CSV – It writes the cleaned data into a new CSV file in memory.
+Uploads the Processed File – Finally, the function saves the cleaned file into a different S3 bucket (csv-processed-data).
+Click Deploy to save the code.
+
+#3 Setup S3 Event Trigger for Lambda: ------->
+
+Now that our Lambda function is setup, we need to configure the raw data S3 bucket to automatically trigger the Lambda function whenever a new file is uploaded in the bucket.
+Go to the S3 Console and select your csv-raw-data bucket.
+Navigate to the Properties tab and scroll down to Event notifications.
+
+Click Create event notification and configure the following:
+Name: CSVUploadTrigge
+Event types: Select PUT (for new file uploads).
+Prefix: raw/ (All raw files are uploaded to this folder).
+Destination: Choose Lambda Function and select CSVPreprocessorFunction.
+Click Save changes.
+
+#4 Test the Data Ingestion and Preprocessing: ------->
+
+Now lets test if the Lambda function is getting triggered when we upload a file in the raw data bucket and if it is getting preprocessed and stored in the processed bucket.
+To do this upload a Sample CSV File:
+
+Go to the S3 Console and navigate to your csv-raw-data bucket.
+Create a folder named raw and upload a sample CSV file (weather-data.csv) to this folder.
+You can download the weather-data.csv from this link.
+https://drive.google.com/file/d/1fE6ktCQyNoPWN_PKNI-nHFC9wxkGMyR1/view
+
+Check Processed Data:
+Now since you added a new csv, this will trigger the Lambda function and store the processed CSV in the processed bucket.
+Navigate to your csv-processed-data bucket and verify that the processed CSV file is present in the correct folder.
+
+Till this point below has been done.
+
+Lambda function deployed and configured.
+S3 event trigger set up and tested.
+Processed CSV file verified in the processed bucket.
+With data ingestion and preprocessing automated, we are all set for the next section where we’ll learn about data transformation using AWS Glue.
