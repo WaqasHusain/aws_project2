@@ -1,0 +1,20 @@
+Clean Up
+
+1. Delete Amazon QuickSight Resources
+Go to Amazon QuickSight and remove any dashboards, datasets, and analyses created for this project.
+If QuickSight is no longer needed, unsubscribe to avoid charges.
+
+2. Delete Raw, Processed and Final Data S3 Buckets
+Navigate to the S3 console. Empty and delete the three S3 buckets used for storing raw, processed and final CSV files.
+
+3. Delete AWS Glue Resources
+Go to AWS Glue in the AWS console. Delete the Glue Job created for ETL processing.
+Remove the Glue Data Catalog table and crawler configured.
+
+4. Delete AWS Lambda Functions
+Navigate to AWS Lambda. Delete the Lambda function that was used for preprocessing CSV files.
+
+5. Remove IAM Roles and Policies
+Delete the IAM roles- Lambda-S3-Glue-Role and Glue-Service-Role created for this project.
+
+
