@@ -17,3 +17,13 @@ AWS Lambda: Acts as a serverless compute layer, automatically triggered to prepr
 AWS Glue: Provides ETL capabilities to extract, transform, and load data into a usable format for analysis. [ETL/Big Data]
 Amazon QuickSight: Offers interactive dashboards and reports for real-time data visualization. [Analytics]
 IAM Roles and Policies: Ensures secure access to S3, Lambda, Glue, and QuickSight. [Permissions]
+
+
+Steps to be performed are below.
+
+Setup and configuration
+Data ingestion and preprocessing
+Data transformation with AWS Glue
+Data visualization with Amazon Quicksight
+
+This project is estimated to take about 3-4 hours with a Cost: $0.50-$1
