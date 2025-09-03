@@ -1,1 +1,116 @@
+Steps to be Performed
 
+#1 Setup an AWS Glue Data Catalog
+#2 Create a Crawler to Discover Data Schema
+#3 Create and Configure an AWS Glue Job using Visual ETL
+#4 Verify and Prepare Transformed Data for Visualization
+
+#1 Setup an AWS Glue Data Catalog: ------->
+
+Now that we’ve automated the data ingestion and preprocessing steps, it’s time to perform more advanced transformations using AWS Glue.
+AWS Glue is a fully managed ETL (Extract, Transform, Load) service that helps transform and move data between different storage layers.
+
+In this section, we’ll set up a Glue job, define a data catalog, and execute transformations on the preprocessed CSV files stored in S3.
+What is AWS Glue?
+AWS Glue is a fully managed ETL (Extract, Transform, Load) service that helps automate data preparation and transformation.
+What is AWS Glue Data Catalog?
+AWS Glue Data Catalog is a centralized metadata repository that stores information about datasets, making them easily searchable and accessible for analytics.
+How is preprocessing through Lambda and Glue ETL different?
+Lambda is ideal for lightweight, real-time preprocessing of small files, while Glue ETL is better suited for large-scale.
+Complex transformations on big data with built-in schema discovery and job orchestration. In this hands-on, we are trying to learn to use both ways.
+Lets start with creating Glue Data Catalog—
+
+Navigate to the AWS Glue Console.
+Click Data Catalogs → Databases → Add Database.
+
+Provide the following details:
+Database Name: csv_data_pipeline_catalog
+Click Create.
+The database serves as a logical container to organize your tables and metadata.
+
+#2 Create a Crawler to Discover Data Schema: ------->
+
+A crawler automatically scans the data and creates metadata tables.
+Go to Crawlers and click Add Crawler.
+Fill in the following details:
+Name: ProcessedCSVDataCrawler
+Data Source: Choose S3 and provide the location of the csv-processed-data bucket.
+
+Click Next and configure:
+IAM Role: Choose Glue-Service-Role Click Next.
+Database: Select the csv_data_pipeline_catalog created earlier.
+Schedule: Select Run on demand. Click Next.
+
+Click Create Crawler
+Select the created Crawler and click on Run.
+Once the crawler completes, a new table schema will be available in your Glue Data Catalog.
+
+#3 Create and Configure an AWS Glue Job Using Visual ETL: ------->
+
+Now lets proceed with creating the AWS Glue Job ETL pipeline using Visual ETL. To do this—Access AWS Glue Studio.
+
+Navigate to the AWS Glue Console, then click AWS Glue Studio from the left menu.
+Create a New Job:
+
+Click Jobs → Create ETLJob.
+Select Visual ETL.
+
+Define the Source:
+In the visual canvas, click on the add button and go to Data Source.
+Choose the AWS Glue Data Catalog. Under the database, choose the created csv_data_pipeline_catalog database.
+Under the table, choose the csv_processed_data table created by the Crawler job.
+
+Add Transformations:
+Click the + button after the source block and choose Change Schema for basic transformations.
+Here I am going to drop the icon column so I will choose the checkbox for icon column.
+
+Define the Target:
+Click the + button after the transformation and select Data Target.
+Choose S3 as the target.
+Enter the S3 path where the transformed CSV file should be stored (e.g., s3://csv-final-data/).
+Format: Select CSV as the output format.
+Compression: Choose GZIP as the compression type.
+
+Configure Job Properties:
+Click the Job Details tab on the right panel and provide the following details:
+Name: CSVDataTransformation
+IAM Role: Select an existing Glue role with access to S3 or create a new one.
+Leave other advanced settings as default.
+
+Save and Run the Job:
+Click Save and then Run.
+Monitor the job status in the Runs tab. It may take a few minutes to complete.
+
+#4 Verify and Prepare Transformed Data for Visualization: ------->
+
+After the Glue pipeline execution, the transformed data will be stored as a ZIP file in the target S3 bucket. Since the file inside may not have an extension, follow these steps to convert it to a proper .csv format.
+
+Navigate to the S3 Bucket:
+Open the AWS S3 Console.
+Locate and select the bucket where the transformed data is stored (e.g., csv-final-data).
+Download the ZIP File
+
+Click on the folder where the output is stored.
+Select the compressed ZIP file and click Download.
+Extract and Rename the File
+On your computer, extract the contents of the ZIP file.
+Locate the extracted file (it may not have an extension).
+Rename the file to include a .csv extension at the end.
+Re-upload the CSV to S3
+
+Go back to the AWS S3 Console.
+Click on Upload and select the renamed .csv file.
+
+Click Upload.
+Verify the Upload
+
+Confirm that the file now appears in the csv-final-data bucket with a .csv extension
+It is now ready for visualization and analytics tasks. You can click on the csv file and copy the Object URL to use it for the further steps. 
+
+Final Check: ------->
+
+Data Catalog created and configured.
+Crawler set up and successfully discovered schema.
+Glue job created and executed with data transformations.
+Transformed data verified in S3.
+Your data is now fully processed and ready for visualization in Amazon QuickSight! In the next section, we’ll set up QuickSight dashboards to visualize these insights.
