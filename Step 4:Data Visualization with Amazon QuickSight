@@ -1,1 +1,62 @@
+Steps to be Performed
+
+#1 Connect to the Data Source
+#2 Build a QuickSight Dashboard
+#3 Share and Publish the Dashboard
+
+#1 Connect to the Data Source: ------->
+
+We’ve successfully automated the ingestion and transformation of CSV data using S3, Lambda, and AWS Glue.
+The final step is to visualize this processed data using Amazon QuickSight, which will help turn processed data into actionable insights.
+We need to connect QuickSight to the processed data stored in S3.
+
+In the QuickSight console, go to the Datasets section and click New Dataset.
+Select S3 as the data source.
+Provide the following details:
+Data Source Name: ProcessedCSV
+Manifest File: Create a manifest file in your local machine with the following content and upload it from your local machine.
+Add the Object URL you copied earlier and replace it in the placeholder.
+
+json
+{
+  "fileLocations": [
+    {
+      "URIs": [
+        "ENTER YOUR OBJECT URL HERE"
+      ]
+    }
+  ],
+  "globalUploadSettings": {
+    "textqualifier": "\""
+  }
+}
+
+Upload the manifest file and click Connect.
+Click Visualize to load the data into QuickSight.
+
+#2 Build a QuickSight Dashboard: ------->
+
+Let’s create a dashboard to visualize the insights from the transformed CSV data.
+Click Add to create a new analysis.
+Select the ProcessedCSVData dataset.
+
+Build the following visualizations:
+Bar Chart: Compare values from different columns.
+Line Chart: Analyze trends over time.
+You can try out different charts by using the columns available in the dataset.
+
+#3 Share and Publish the Dashboard: ------->
+
+Select Publish Dashboard to make it accessible to other users.
+
+Final Check: ------->
+
+QuickSight account set up and configured.
+Data source connected and loaded into QuickSight.
+Dashboard created with meaningful visualizations.
+Pipeline tested with new data, ensuring dynamic updates.
+
+
+
+
 
