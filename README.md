@@ -1,7 +1,7 @@
 # aws_project2
 Data Pipeline for Processing CSV Files Using S3, Lambda, Glue, and QuickSight
 
-This project involves building a serverless data pipeline on AWS for processing CSV files. The pipeline automates the ingestion, transformation, and visualization of data. CSV files are uploaded to an raw data S3 bucket(csv-raw-data), triggering an AWS Lambda function to preprocess the data and store it in the processed data bucket(csv-processed-data) .
+This project involves building a serverless data pipeline on AWS for processing CSV files. The pipeline automates the ingestion, transformation, and visualization of data. CSV files are uploaded to a raw data S3 bucket(csv-raw-data), triggering an AWS Lambda function to preprocess the data and store it in the processed data bucket(csv-processed-data) .
 
 AWS Glue is then used for further ETL (Extract, Transform, Load) operations, and the final data is stored in final data bucket (csv-final-data). Finally, Amazon QuickSight is used to create interactive dashboards and reports for visualizing the final data.
 
